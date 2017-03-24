@@ -1,7 +1,8 @@
 ##########
 # Win10 Initial Setup Script
-# Author: Disassembler <disassembler@dasm.cz>
-# Version: 2.1, 2017-02-08
+# Author: S0L1DUS
+# Forked from: Disassembler0
+# Version: 2.1.2, 2017-03-24
 ##########
 
 # Ask for elevated permissions if required
@@ -30,9 +31,9 @@ $preset = @(
 
 	### Service Tweaks ###
 	# "LowerUAC",                   # "RaiseUAC",
-	# "EnableSharingMappedDrives",  # "DisableSharingMappedDrives",
+	"DisableSharingMappedDrives",   # "EnableSharingMappedDrives",
 	"DisableAdminShares",           # "EnableAdminShares",
-	"DisableFirewall",              # "EnableFirewall",
+	# "EnableFirewall",             # "DisableFirewall",
 	# "DisableDefender",            # "EnableDefender",
 	# "DisableUpdateMSRT",          # "EnableUpdateMSRT",
 	# "DisableUpdateDriver",        # "EnableUpdateDriver",
@@ -47,13 +48,13 @@ $preset = @(
 
 	### UI Tweaks ###
 	"DisableActionCenter",          # "EnableActionCenter",
-	"DisableLockScreen",            # "EnableLockScreen",
+	"EnableLockScreen",             # "DisableLockScreen",
 	# "DisableLockScreenRS1",       # "EnableLockScreenRS1",
 	"DisableStickyKeys",            # "EnableStickyKeys",
-	"HideTaskbarSearchBox",         # "ShowTaskbarSearchBox",
+	"ShowTaskbarSearchBox",         # "HideTaskbarSearchBox",
 	"HideTaskView",                 # "ShowTaskView",
 	"ShowSmallTaskbarIcons",        # "ShowLargeTaskbarIcons",
-	"ShowTaskbarTitles",            # "HideTaskbarTitles",
+	"HideTaskbarTitles",            # "ShowTaskbarTitles",
 	"ShowTrayIcons",                # "HideTrayIcons",
 	"ShowKnownExtensions",          # "HideKnownExtensions",
 	"ShowHiddenFiles",              # "HideHiddenFiles",
@@ -82,6 +83,7 @@ $preset = @(
 	"DisableSearchAppInStore",      # "EnableSearchAppInStore",
 	"DisableNewAppPrompt",          # "EnableNewAppPrompt",
 	"EnableF8BootMenu",             # "DisableF8BootMenu",
+	"UninstallWindowsStore",        # "InstallWindowsStore",
 
 	### Auxiliary Functions ###
 	"WaitForKey",
@@ -951,6 +953,7 @@ Function UninstallBloatware {
 	Get-AppxPackage "D52A8D61.FarmVille2CountryEscape" | Remove-AppxPackage
 	Get-AppxPackage "GAMELOFTSA.Asphalt8Airborne" | Remove-AppxPackage
 	Get-AppxPackage "Microsoft.WindowsFeedbackHub" | Remove-AppxPackage
+	Get-AppxPackage "king.com.ParadiseBay" | Remove-AppxPackage
 }
 
 # Install default Microsoft applications
@@ -991,6 +994,7 @@ Function InstallBloatware {
 	Get-AppxPackage -AllUsers "D52A8D61.FarmVille2CountryEscape" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	Get-AppxPackage -AllUsers "GAMELOFTSA.Asphalt8Airborne" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 	Get-AppxPackage -AllUsers "Microsoft.WindowsFeedbackHub" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+	Get-AppxPackage -AllUsers "king.com.ParadiseBay" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
 }
 # In case you have removed them for good, you can try to restore the files using installation medium as follows
 # New-Item C:\Mnt -Type Directory | Out-Null
@@ -1164,6 +1168,17 @@ Function DisableF8BootMenu {
 	bcdedit /set `{current`} bootmenupolicy Standard | Out-Null
 }
 
+# Install Windows Store
+Function InstallWindowsStore {
+	Write-Host "Installing Windows Store..."
+	Get-AppxPackage -AllUsers "Microsoft.WindowsStore" | ForEach {Add-AppxPackage -DisableDevelopmentMode -Register "$($_.InstallLocation)\AppXManifest.xml"}
+}
+
+# Uninstall Windows Store
+Function UninstallWindowsStore {
+	Write-Host "Uninstalling Windows Store..."
+	Get-AppxPackage -AllUsers "Microsoft.WindowsStore" | Remove-AppxPackage
+}
 
 
 ##########
